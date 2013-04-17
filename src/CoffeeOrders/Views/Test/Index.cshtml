@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "Test";
+}
+
+
+<div id="body">
+    <section class="featured">
+        <div class="content-wrapper"><h2>Test Javascript API</h2></div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        <div class="content-wrapper">
+            <section>
+                <fieldset >
+        
+                    <legend>Input</legend>
+        
+                    <label for="url">Url</label>
+                    <input type="text" name="url" id="url" title="Url" maxlength="60" placeholder="/api/" autocomplete="off" required/>
+        
+                    <label for="method">Method</label>
+                    <select id="method">
+                        <option id="GET" selected="selected">GET</option>
+                        <option id="POST">POST</option>
+                        <option id="PUT" >PUT</option>
+                        <option id="DELETE">DELETE</option>
+                    </select>
+        
+                    <label for="requestBody">Body</label>
+                    <textarea name="requestBody" id="requestBody" cols="30" rows="5" placeholder="" required></textarea>
+        
+                </fieldset>
+
+            </section>
+            <section>
+                <fieldset >
+                    <legend>Result</legend>
+                
+                    <label for="code">Code</label>
+                    <span id="code"></span>
+ 
+                    <label for="result">Result</label>
+         
+                    <textarea name="result" id="result" title="Result" cols="30" rows="20" placeholder="" required></textarea>
+    
+                </fieldset>
+            </section>
+            <input type="submit" value="Send" id="submit"/>
+        </div>
+    </section>
+
+    
+</div>
+<script type="text/javascript" >
+    // variable to hold request
+    $(function() {
+        var request;
+        $("#submit").click(function(event) {
+            // abort any pending request
+            if (request) {
+                request.abort();
+            }
+
+            var ajaxArgs = {
+                url: $("#url").val(),
+                contentType: 'application/json',
+                type: $("#method").val()
+            };
+
+            if (ajaxArgs.type == 'POST' || ajaxArgs.type == 'PUT') {
+                ajaxArgs.dataType = 'json';
+                ajaxArgs.data = $("#requestBody").val();
+            }
+
+            $("#code").text('');
+            $("#result").text('');
+
+            // fire off the request to 
+            var request = $.ajax(ajaxArgs);
+
+            // callback handler that will be called on success
+            request.done(function(response, textStatus, jqXHR) {
+                $("#code").text(jqXHR.status + ' ' + jqXHR.statusText);
+                $("#result").text(JSON.stringify(response, undefined, 2));
+
+            });
+
+            // callback handler that will be called on failure
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                $("#code").text(jqXHR.status + ' ' + jqXHR.statusText);
+            });
+
+
+        });
+    });
+</script>
