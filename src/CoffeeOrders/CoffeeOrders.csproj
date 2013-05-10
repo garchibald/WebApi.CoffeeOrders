@@ -200,6 +200,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\MappingConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Migrations\201305101411000_AddNotificationUrl.cs" />
+    <Compile Include="Migrations\201305101411000_AddNotificationUrl.Designer.cs">
+      <DependentUpon>201305101411000_AddNotificationUrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NotificationResponse.cs" />
+    <Compile Include="Services\AsyncHttpNotificationClient.cs" />
+    <Compile Include="Services\INotificationClient.cs" />
     <Compile Include="Filters\StaffRoleFilter.cs" />
     <Compile Include="Filters\ValidationActionFilter.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -220,6 +227,15 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
+    <Compile Include="Migrations\201304160546219_InitialCreate.cs" />
+    <Compile Include="Migrations\201304160546219_InitialCreate.Designer.cs">
+      <DependentUpon>201304160546219_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201305090829238_AddNotificationUrl.cs" />
+    <Compile Include="Migrations\201305090829238_AddNotificationUrl.Designer.cs">
+      <DependentUpon>201305090829238_AddNotificationUrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\CustomerOrder.cs" />
     <Compile Include="Services\ICustomerOrderLinkManager.cs" />
@@ -377,6 +393,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201304160546219_InitialCreate.resx">
+      <DependentUpon>201304160546219_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201305090829238_AddNotificationUrl.resx">
+      <DependentUpon>201305090829238_AddNotificationUrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201305101411000_AddNotificationUrl.resx">
+      <DependentUpon>201305101411000_AddNotificationUrl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

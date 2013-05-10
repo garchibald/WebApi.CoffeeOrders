@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -6,6 +7,7 @@ using System.Web.Routing;
 using CoffeeOrders.Models.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using WebMatrix.WebData;
 
 namespace CoffeeOrders
 {
@@ -30,6 +32,22 @@ namespace CoffeeOrders
 
             Database.SetInitializer(new EFContextInitializer());
             var context = new EFContext();
+
+            WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", true);
+
+            try
+            {
+                var config = new DbMigrationsConfiguration<EFContext> {AutomaticMigrationsEnabled = true};
+                var migrator = new DbMigrator(config);
+                migrator.Update();
+
+            }
+            catch
+            {
+                
+            }
+            
+
             //NOTE:To delete database Use SQl Enterprise Manager to DROP database before remove from filesystem
             // http://odetocode.com/Blogs/scott/archive/2012/08/14/a-troubleshooting-guide-for-entity-framework-connections-amp-migrations.aspx
             context.Database.Initialize(true);

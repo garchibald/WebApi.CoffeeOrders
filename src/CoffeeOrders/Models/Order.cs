@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoffeeOrders.Models
 {
@@ -34,5 +35,15 @@ namespace CoffeeOrders.Models
         /// The internal workflow status
         /// </summary>
         public string Status { get; set; }
+
+        ///<summary>
+        ///Notification Url
+        ///</summary>
+        public string NotificationUrl { get; set; }
+
+        ///<summary>
+        ///The optional order reference
+        ///</summary>
+        public string OrderReference { get; set; }
     }
 }

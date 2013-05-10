@@ -8,5 +8,6 @@ namespace CoffeeOrders.Services
     {
         void AddLinks(CustomerOrder order, ApiController controller);
         Uri LinkToSelf(CustomerOrder order, ApiController controller);
+        Uri GetOrder(CustomerOrder order, ApiController controller);
     }
 }

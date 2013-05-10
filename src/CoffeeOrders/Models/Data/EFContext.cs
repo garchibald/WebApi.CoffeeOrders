@@ -21,7 +21,8 @@ namespace CoffeeOrders.Models.Data
     }
 
 
-    public class EFContextInitializer : DropCreateDatabaseIfModelChanges<EFContext>
+
+    public class EFContextInitializer : CreateDatabaseIfNotExists<EFContext>
     {
         protected override void Seed(EFContext context)
         {

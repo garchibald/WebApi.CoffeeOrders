@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Http.OData;
 using System.Web.Http.OData.Query;
 using AutoMapper;
 using CoffeeOrders.Filters;
@@ -21,6 +20,7 @@ namespace CoffeeOrders.Controllers
     public class OrdersController : ApiController
     {
         public ICustomerOrderLinkManager LinkManager { get; set; }
+        public INotificationClient NotificationClient { get; set; }
         private readonly IRepository _repository;
 
         /// <summary>
@@ -28,9 +28,12 @@ namespace CoffeeOrders.Controllers
         /// </summary>
         /// <param name="repository">The repository instance to get and update orders</param>
         /// <param name="linkManager">The link manager to controler workflow</param>
-        public OrdersController(IRepository repository, ICustomerOrderLinkManager linkManager)
+        /// <param name="notificationClient"></param>
+        public OrdersController(IRepository repository, ICustomerOrderLinkManager linkManager,
+                                INotificationClient notificationClient)
         {
             LinkManager = linkManager;
+            NotificationClient = notificationClient;
             _repository = repository;
         }
 
@@ -49,8 +52,8 @@ namespace CoffeeOrders.Controllers
             }
 
             var customerOrder = Mapper.Map<CustomerOrder>(order);
-            LinkManager.AddLinks(customerOrder,this);
-            
+            LinkManager.AddLinks(customerOrder, this);
+
             var response = Request.CreateResponse(HttpStatusCode.OK, customerOrder);
             response.Headers.Location = LinkManager.LinkToSelf(customerOrder, this);
 
@@ -61,16 +64,16 @@ namespace CoffeeOrders.Controllers
         /// <summary>
         /// Search for existing orders that are pending completion
         /// </summary>
-        /// <param name="query">The </param>
+        /// <param name="query">The OData query</param>
         /// <returns></returns>
         //[Queryable] - Removed as want to map to external object
         public IQueryable<CustomerOrder> Get(ODataQueryOptions<Order> query)
         {
             query.Validate(new ODataValidationSettings());
-            var results = query.ApplyTo(_repository.All<Order>().Where(o => o.State == "Pending" || o.State =="Updated")) as IQueryable<Order>;
+            var results =
+                query.ApplyTo(_repository.All<Order>().Where(o => o.State == "Pending" || o.State == "Updated")) as
+                IQueryable<Order>;
             return ConvertToCustomerOrders(results);
-
-            return new List<CustomerOrder>().AsQueryable();
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace CoffeeOrders.Controllers
         /// <returns></returns>
         public HttpResponseMessage Put(int id, [FromUri] string action)
         {
-       
+
             HttpResponseMessage response;
             if (ValidateAction(action, out response)) return response;
 
@@ -101,7 +104,18 @@ namespace CoffeeOrders.Controllers
             var customerOrder = Mapper.Map<CustomerOrder>(order);
             LinkManager.AddLinks(customerOrder, this);
 
+            NotifyOrderUpdated(customerOrder);
+
             return Request.CreateResponse(HttpStatusCode.OK, customerOrder);
+        }
+
+        private void NotifyOrderUpdated(CustomerOrder order)
+        {
+            if (order.NotificationUrl != null)
+            {
+                NotificationClient.NotifyChange(order.NotificationUrl,
+                    new NotificationResponse { Changed = LinkManager.GetOrder(order, this) });
+            }
         }
 
         private void UpdateInternalState(string action, Order order)

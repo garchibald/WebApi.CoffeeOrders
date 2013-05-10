@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace CoffeeOrders.Models
@@ -6,7 +7,7 @@ namespace CoffeeOrders.Models
     /// <summary>
     /// Public facing view of order seen by consumers of the service
     /// </summary>
-    [DataContract]
+    [DataContract(Namespace = "http://coffee.orders")]
     public class CustomerOrder
     {
         public CustomerOrder()
@@ -40,5 +41,11 @@ namespace CoffeeOrders.Models
 
         [DataMember]
         public IList<UrlReference> Links { get; private set; }
+
+        [DataMember]
+        public Uri NotificationUrl { get; set; }
+
+        [DataMember]
+        public string OrderReference { get; set; }
     }
 }

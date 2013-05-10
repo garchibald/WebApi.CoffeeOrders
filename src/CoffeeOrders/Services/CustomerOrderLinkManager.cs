@@ -66,6 +66,19 @@ namespace CoffeeOrders.Services
             } 
         }
 
+        public Uri GetOrder(CustomerOrder order, ApiController controller)
+        {
+            // http://odetocode.com/blogs/scott/archive/2013/03/27/webapi-tip-5-generating-links.aspx
+            var link = controller.Url.Link("DefaultApi",
+                                             new
+                                             {
+                                                 controller = "order",
+                                                 id = order.Id
+                                             });
+
+            return link != null ? new Uri(link) : null;
+        }
+
         private void DeleteOrder(CustomerOrder order, ApiController controller)
         {
             // http://odetocode.com/blogs/scott/archive/2013/03/27/webapi-tip-5-generating-links.aspx

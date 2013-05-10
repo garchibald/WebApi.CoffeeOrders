@@ -48,7 +48,7 @@ namespace CoffeeOrders
             builder.Register(c => new EFRepository()).As<IRepository>().InstancePerApiRequest();
             builder.Register(c => new PriceEngine()).As<IPriceEngine>().InstancePerApiRequest();
             builder.Register(c => new CustomerOrderLinkManager()).As<ICustomerOrderLinkManager>().InstancePerApiRequest();
-
+            builder.Register(c => new AsyncHttpNotificationClient()).As<INotificationClient>().InstancePerApiRequest();
 
             // Build the container.
             var container = builder.Build();
@@ -58,6 +58,8 @@ namespace CoffeeOrders
 
             // Configure Web API with the dependency resolver.
             GlobalConfiguration.Configuration.DependencyResolver = resolver;
+
+            
         }
 
         public static void RegisterRoutes(HttpConfiguration config)
@@ -75,6 +77,15 @@ namespace CoffeeOrders
 
         private static void RegisterODataRoutes(HttpConfiguration config)
         {
+            //Components for implementing OData services
+            //   Ex Model builders, formatters (Atom/JSON/XML), path and query parsers, LINQ expression generator, etc
+            //Support common patterns using an open protocol
+            //   Ex. query, paging, relationships, metadata
+            //Integrates with OData client ecosystem
+            //   Ex. Add Service Reference, Excel, datajs
+            //Built on ODataLib
+            //   Same underpinnings as WCF Data Services
+
             var modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EntitySet<CustomerOrder>("Orders");
             modelBuilder.AddEntity(typeof(Order));
